@@ -1,7 +1,7 @@
 const express = require('express');
-const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 const databaseController = require('./databaseController');
 
@@ -14,7 +14,15 @@ app.use(cookieParser());
 app.use(express.static(publicPath));
 
 app.post('/api/signup', databaseController.createUser);
+
 app.post('/api/login', databaseController.login);
+
+app.get('/api/users', databaseController.getAllUsers);
+app.get('/api/users/:userId/rooms', databaseController.getRooms);
+
+app.post('/api/rooms', databaseController.createRoom);
+app.post('/api/rooms/:roomId/invite', databaseController.inviteUsers);
+app.get('/api/rooms/:roomId/users', databaseController.getRoomUsers);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(publicPath, 'index.html'));
