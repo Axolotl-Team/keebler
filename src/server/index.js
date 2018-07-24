@@ -13,7 +13,8 @@ app.use(cookieParser());
 
 app.use(express.static(publicPath));
 
-app.get('/api/signup', databaseController.createUser);
+app.post('/api/signup', databaseController.createUser);
+app.post('/api/login', databaseController.login);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(publicPath, 'index.html'));
