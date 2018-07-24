@@ -1,21 +1,24 @@
 const express = require('express');
-const http = require('http');
+const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
-const databaseController = require('./controller.js');
+const databaseController = require('./databaseController');
 
 const app = express();
-const server = http.createServer(app);
+const publicPath = path.resolve(__dirname, '../../public');
 
-app.use(express.static('dist'));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.get('/');
+app.use(express.static(publicPath));
 
-server.listen(8080, () => {
-  console.log('listening 8080');
+app.get('/api/signup', databaseController.createUser);
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(publicPath, 'index.html'));
 });
 
-module.exports = server;
+app.listen(8080, () => {
+  console.log('listening 8080');
+});
