@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 class Login extends Component {
   constructor() {
@@ -11,7 +12,13 @@ class Login extends Component {
 
   handleOnSubmit = (e) => {
     e.preventDefault();
-  };
+    axios.post('http://localhost:8080/api/login', {
+      username: 'mark',
+      password: 'mark',
+    })
+      .then(response => console.log(response))
+      .catch(error => console.log(error));
+  }
 
   handleUsernameChange = (e) => {
     this.setState({

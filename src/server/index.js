@@ -14,6 +14,9 @@ const publicPath = path.resolve(__dirname, '../../public');
 io.on('connection', (socket) => {
   console.log('a user connected');
   socket.on('message', (msg) => {
+    const { message, userId, roomId } = msg;
+    databaseController.createMessage(msg);
+    socket.emit('message', {message, username, time});
     console.log(`message: ${msg}`);
   });
   socket.on('disconnect', () => {

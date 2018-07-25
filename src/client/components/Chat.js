@@ -8,6 +8,7 @@ class Chat extends Component {
     this.state = {
       socket: null,
       input: '',
+      messages: [],
     };
   }
 
@@ -15,16 +16,18 @@ class Chat extends Component {
     this.initConnection();
   }
 
+  // async getMessages() {
+  //  await fetch('http://localhost:8080/api/')
+  // }
+
   initConnection = () => {
     const socket = io.connect('http://localhost:8080');
-    socket.on('');
-
+    // socket.on('message', );
     this.setState({ socket });
   };
 
   handleOnSubmit = (e) => {
     e.preventDefault();
-
     const { input, socket } = this.state;
     socket.emit('message', input);
   };

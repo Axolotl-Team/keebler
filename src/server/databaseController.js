@@ -30,6 +30,7 @@ const Message = sequelize.define('message', {
   senderId: { type: Sequelize.INTEGER, allowNull: false },
   roomId: { type: Sequelize.INTEGER, allowNull: false },
 });
+
 const Room = sequelize.define('room', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: Sequelize.STRING, allowNull: false },
@@ -59,16 +60,16 @@ const databaseController = {
     }
   },
 
-  createMessage: (req, res) => {
-    Message.create({
-      message: req.body.message,
-      senderId: req.body.userId,
-      roomId: req.body.roomId,
-    }).then((messageIntance, error) => {
-      if (error) {
-        return res.status(400).send({ message: error });
-      }
-    });
+  createMessage: async ({ message, userId, roomId }) => {
+    try {
+      return await Message.create({
+        message,
+        senderId: userId,
+        roomId,
+      });
+    } catch (error) {
+      return console.log('problem retrieving messages bro');
+    }
   },
 
   getMessages: async (req, res) => {
@@ -93,9 +94,9 @@ const databaseController = {
 
   createRoom: async (req, res) => {
     try {
-      const { userId, roomName } = req.body;
+      const { userId, roomname } = req.body;
       const userInstance = await User.findById(userId);
-      const roomInstance = await Room.create({ name: roomName });
+      const roomInstance = await Room.create({ name: roomname });
       await userInstance.addRoom(roomInstance);
       res.json(roomInstance);
     } catch (error) {
@@ -151,7 +152,6 @@ const databaseController = {
   getRoomUsers: async (req, res) => {
     try {
       const { roomId } = req.params;
-
       const roomUsers = await User.findAll({
         include: [
           {
