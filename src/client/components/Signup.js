@@ -1,4 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import axios from 'axios';
+
+import * as actions from '../actions/actions';
 
 class Signup extends Component {
   constructor() {
@@ -9,8 +14,27 @@ class Signup extends Component {
     };
   }
 
-  handleOnSubmit = (e) => {
+  handleOnSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const { setUser } = this.props;
+      const { username, password } = this.state;
+      const response = await axios.post('http://localhost:8080/api/signup', {
+        username,
+        password,
+      });
+
+      console.log(response.data);
+
+      const user = {
+        userId: response.data.id,
+        username: response.data.username,
+      };
+      setUser(user);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   handleUsernameChange = (e) => {
@@ -27,6 +51,10 @@ class Signup extends Component {
 
   render() {
     const { username, password } = this.state;
+
+    if (this.props.userId && this.props.username) {
+      return <Redirect to="/chat" />;
+    }
 
     return (
       <div className="signup">
@@ -58,4 +86,18 @@ class Signup extends Component {
   }
 }
 
-export default Signup;
+const mapStateToProps = ({ user }) => ({
+  userId: user.userId,
+  username: user.username,
+});
+
+const mapDispatchToProps = dispatch => ({
+  setUser: (user) => {
+    dispatch(actions.setUser(user));
+  },
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Signup);
