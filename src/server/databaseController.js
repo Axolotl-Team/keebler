@@ -75,7 +75,7 @@ const databaseController = {
   getMessages: async (req, res) => {
     try {
       const messages = await Message.findAll({
-        where: { roomId: req.body.roomId },
+        where: { roomId: req.params.roomId },
       });
       res.json(messages);
     } catch (error) {

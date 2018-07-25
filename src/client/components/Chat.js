@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import io from 'socket.io-client';
+import axios from 'axios';
 
 import Messages from './Messages';
 
@@ -16,11 +17,13 @@ class Chat extends Component {
 
   componentDidMount() {
     this.initConnection();
+    this.getMessages();
   }
 
-  // async getMessages() {
-  //  await fetch('http://localhost:8080/api/')
-  // }
+  async getMessages() {
+    const response = await axios.get('http://localhost:8080/api/rooms/99999/messages');
+    console.log('response: ', response);
+  }
 
   initConnection = () => {
     const socket = io.connect('http://localhost:8080');
@@ -57,7 +60,6 @@ class Chat extends Component {
 
     return (
       <div className="chat">
-        <Messages />
         <form onSubmit={this.handleOnSubmit} className="chat-form">
           <input
             type="text"

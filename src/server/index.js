@@ -46,6 +46,7 @@ app.get('/api/users/:userId/rooms', databaseController.getRooms);
 app.post('/api/rooms', databaseController.createRoom);
 app.post('/api/rooms/:roomId/invite', databaseController.inviteUsers);
 app.get('/api/rooms/:roomId/users', databaseController.getRoomUsers);
+app.get('/api/rooms/:roomId/messages', databaseController.getMessages);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(publicPath, 'index.html'));
