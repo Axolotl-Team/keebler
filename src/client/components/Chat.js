@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import io from 'socket.io-client';
+
+import Messages from './Messages';
 
 class Chat extends Component {
   constructor() {
@@ -22,14 +24,26 @@ class Chat extends Component {
 
   initConnection = () => {
     const socket = io.connect('http://localhost:8080');
-    // socket.on('message', );
+    socket.on('message', (message) => {
+      console.log(message);
+    });
     this.setState({ socket });
   };
 
   handleOnSubmit = (e) => {
     e.preventDefault();
     const { input, socket } = this.state;
-    socket.emit('message', input);
+    const {
+      roomId, roomname, userId, username,
+    } = this.props;
+
+    socket.emit('message', {
+      message: input,
+      roomId,
+      roomname,
+      userId,
+      username,
+    });
   };
 
   handleInputChange = (e) => {
@@ -43,6 +57,7 @@ class Chat extends Component {
 
     return (
       <div className="chat">
+        <Messages />
         <form onSubmit={this.handleOnSubmit} className="chat-form">
           <input
             type="text"
@@ -57,4 +72,11 @@ class Chat extends Component {
   }
 }
 
-export default Chat;
+const mapStateToProps = ({ user, room }) => ({
+  userId: user.userId,
+  username: user.username,
+  roomId: room.roomId,
+  roomname: room.roomname,
+});
+
+export default connect(mapStateToProps)(Chat);

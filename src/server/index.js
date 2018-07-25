@@ -1,23 +1,26 @@
 const express = require('express');
 const http = require('http');
 const bodyParser = require('body-parser');
-const socket = require('socket.io');
 const path = require('path');
+const moment = require('moment');
 
 const databaseController = require('./databaseController');
 
 const app = express();
 const server = http.Server(app);
-const io = socket(server);
+const io = require('socket.io')(server);
+
 const publicPath = path.resolve(__dirname, '../../public');
 
 io.on('connection', (socket) => {
   console.log('a user connected');
   socket.on('message', (msg) => {
-    const { message, userId, roomId } = msg;
-    databaseController.createMessage(msg);
-    socket.emit('message', { message, username, time });
-    console.log(`message: ${msg}`);
+    const {
+      message, userId, username, roomId,
+    } = msg;
+    databaseController.createMessage({ message, userId, roomId });
+    const time = moment().format('h:mm a');
+    io.emit('message', { message, username, time });
   });
   socket.on('disconnect', () => {
     console.log('user disconnected');
