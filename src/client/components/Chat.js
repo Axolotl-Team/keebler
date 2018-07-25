@@ -18,13 +18,18 @@ class Chat extends Component {
 
   async componentDidMount() {
     this.initConnection();
-    await this.getMessages();
   }
 
-  async getMessages() {
-    const response = await axios.get('http://localhost:8080/api/rooms/99999/messages');
-    this.setState({ messages: response.data });
-  }
+  getMessages = async () => {
+    try {
+      const { roomId } = this.props;
+
+      const response = await axios.get(`http://localhost:8080/api/rooms/${roomId}/messages`);
+      this.setState({ messages: response.data });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   initConnection = () => {
     const socket = io.connect('http://localhost:8080');
@@ -64,16 +69,20 @@ class Chat extends Component {
     });
   };
 
-  // handleCreateRoom = () => {
-  //   axios.post('http://localhost:8080/api/rooms/', { userId, roomname })
-  // };
-
   render() {
     const { input, messages } = this.state;
+    const { roomId } = this.props;
+
+    if (roomId) {
+      this.getMessages();
+    }
 
     return (
       <div className="chat">
-        {/* <ChatRoomButtons handleCreateRoom={handleCreateRoom} /> */}
+        <ChatRoomButtons
+          handleCreateRoom={this.handleCreateRoom}
+          handleInviteToRoom={this.handleInviteToRoom}
+        />
         <Messages messages={messages} />
         <form onSubmit={this.handleOnSubmit} className="chat-form">
           <input
