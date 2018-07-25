@@ -14,13 +14,17 @@ const publicPath = path.resolve(__dirname, '../../public');
 
 io.on('connection', (socket) => {
   console.log('a user connected');
-  socket.on('message', (msg) => {
-    const {
-      message, userId, username, roomId,
-    } = msg;
-    databaseController.createMessage({ message, userId, roomId });
-    const time = moment().format('h:mm a');
-    io.emit('message', { message, username, time });
+  socket.on('message', ({
+    message, userId, username, roomId,
+  }) => {
+    databaseController.createMessage({
+      message,
+      userId,
+      username,
+      roomId,
+    });
+    const createdAt = moment().format('h:mm a');
+    io.emit('message', { message, username, createdAt });
   });
   socket.on('disconnect', () => {
     console.log('user disconnected');

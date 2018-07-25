@@ -18,7 +18,7 @@ class Signup extends Component {
     e.preventDefault();
 
     try {
-      const { setUser } = this.props;
+      const { setUser, setRoom } = this.props;
       const { username, password } = this.state;
       const response = await axios.post('http://localhost:8080/api/signup', {
         username,
@@ -32,6 +32,10 @@ class Signup extends Component {
         username: response.data.username,
       };
       setUser(user);
+      setRoom({
+        roomId: 99999,
+        roomname: 'Main',
+      });
     } catch (error) {
       console.log(error);
     }
@@ -94,6 +98,9 @@ const mapStateToProps = ({ user }) => ({
 const mapDispatchToProps = dispatch => ({
   setUser: (user) => {
     dispatch(actions.setUser(user));
+  },
+  setRoom: (room) => {
+    dispatch(actions.setRoom(room));
   },
 });
 

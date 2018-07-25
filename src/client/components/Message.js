@@ -1,26 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Messages extends Component {
-  constructor() {
-    super();
-    this.state = {
-      messages: [],
-    };
-  }
+const Message = ({ message, username, createdAt }) => (
+  <div className="message">
+    <p className="message__header">
+      <span className="message__username">{username}</span>
+      <span className="message__createdAt">{createdAt}</span>
+    </p>
+    <p className="message__content">{message}</p>
+  </div>
+);
 
-  componentDidMount() {
-    this.getMessages();
-  }
-
-  async getMessages() {
-    await fetch('http://localhost:8080/api/getMessages');
-  }
-
-  render() {
-    const { messages } = this.state;
-    const messageComps = messages.map(message => <Message message={message} />);
-    return <div className="messages">{messageComps}</div>;
-  }
-}
-
-export default Messages;
+export default Message;

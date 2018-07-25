@@ -27,7 +27,8 @@ const User = sequelize.define('user', {
 const Message = sequelize.define('message', {
   message: Sequelize.STRING,
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  senderId: { type: Sequelize.INTEGER, allowNull: false },
+  userId: { type: Sequelize.INTEGER, allowNull: false },
+  username: { type: Sequelize.STRING, allowNull: false },
   roomId: { type: Sequelize.INTEGER, allowNull: false },
 });
 
@@ -37,7 +38,7 @@ const Room = sequelize.define('room', {
 });
 
 // 1:M
-User.hasMany(Message, { foreignKey: 'senderId' });
+User.hasMany(Message, { foreignKey: 'userId' });
 Room.hasMany(Message, { foreignKey: 'roomId' });
 Room.belongsToMany(User, { through: 'user_room_link' });
 User.belongsToMany(Room, { through: 'user_room_link' });
@@ -60,14 +61,18 @@ const databaseController = {
     }
   },
 
-  createMessage: async ({ message, userId, roomId }) => {
+  createMessage: async ({
+    message, userId, username, roomId,
+  }) => {
     try {
       return await Message.create({
         message,
-        senderId: userId,
+        userId,
+        username,
         roomId,
       });
     } catch (error) {
+      console.log(error);
       return console.log('problem retrieving messages bro');
     }
   },

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import io from 'socket.io-client';
 import axios from 'axios';
 
+import ChatRoomButtons from './ChatRoomButtons';
 import Messages from './Messages';
 
 class Chat extends Component {
@@ -15,19 +16,27 @@ class Chat extends Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.initConnection();
-    this.getMessages();
+    await this.getMessages();
   }
 
   async getMessages() {
     const response = await axios.get('http://localhost:8080/api/rooms/99999/messages');
-    console.log('response: ', response);
+    this.setState({ messages: response.data });
   }
 
   initConnection = () => {
     const socket = io.connect('http://localhost:8080');
     socket.on('message', (message) => {
+      this.setState((prevState) => {
+        const newMessages = prevState.messages.concat([message]);
+
+        return {
+          ...prevState,
+          messages: newMessages,
+        };
+      });
       console.log(message);
     });
     this.setState({ socket });
@@ -55,11 +64,17 @@ class Chat extends Component {
     });
   };
 
+  // handleCreateRoom = () => {
+  //   axios.post('http://localhost:8080/api/rooms/', { userId, roomname })
+  // };
+
   render() {
-    const { input } = this.state;
+    const { input, messages } = this.state;
 
     return (
       <div className="chat">
+        {/* <ChatRoomButtons handleCreateRoom={handleCreateRoom} /> */}
+        <Messages messages={messages} />
         <form onSubmit={this.handleOnSubmit} className="chat-form">
           <input
             type="text"
