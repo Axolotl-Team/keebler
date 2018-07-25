@@ -16,12 +16,18 @@ io.on('connection', (socket) => {
   socket.on('message', (msg) => {
     const { message, userId, roomId } = msg;
     databaseController.createMessage(msg);
-    socket.emit('message', {message, username, time});
+    socket.emit('message', { message, username, time });
     console.log(`message: ${msg}`);
   });
   socket.on('disconnect', () => {
     console.log('user disconnected');
   });
+});
+
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
 });
 
 app.use(bodyParser.json());
