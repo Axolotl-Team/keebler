@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import axios from 'axios';
 
 import ChatRoomButtons from './ChatRoomButtons';
+import ChatRoomList from './ChatRoomList';
 import Messages from './Messages';
 
 class Chat extends Component {
@@ -13,17 +14,31 @@ class Chat extends Component {
       socket: null,
       input: '',
       messages: [],
+      rooms: [],
+      hasGotMessage: false,
     };
   }
 
   async componentDidMount() {
     this.initConnection();
+    this.getRooms();
   }
 
-  getMessages = async () => {
-    try {
-      const { roomId } = this.props;
+  getRooms = async () => {
+    const { userId } = this.props;
 
+    try {
+      const response = await axios.get(`http://localhost:8080/api/users/${userId}/rooms`);
+      this.setState({ rooms: response.data });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  getMessages = async () => {
+    const { roomId } = this.props;
+
+    try {
       const response = await axios.get(`http://localhost:8080/api/rooms/${roomId}/messages`);
       this.setState({ messages: response.data });
     } catch (error) {
@@ -42,7 +57,6 @@ class Chat extends Component {
           messages: newMessages,
         };
       });
-      console.log(message);
     });
     this.setState({ socket });
   };
@@ -70,11 +84,16 @@ class Chat extends Component {
   };
 
   render() {
-    const { input, messages } = this.state;
+    const {
+      input, messages, rooms, hasGotMessage,
+    } = this.state;
     const { roomId } = this.props;
+    console.log(rooms);
 
-    if (roomId) {
+    if (roomId && !hasGotMessage) {
+      this.setState({ hasGotMessage: true });
       this.getMessages();
+      // this.getRooms();
     }
 
     return (
@@ -83,6 +102,7 @@ class Chat extends Component {
           handleCreateRoom={this.handleCreateRoom}
           handleInviteToRoom={this.handleInviteToRoom}
         />
+        {/* <ChatRoomList /> */}
         <Messages messages={messages} />
         <form onSubmit={this.handleOnSubmit} className="chat-form">
           <input
