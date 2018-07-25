@@ -5,6 +5,7 @@ import Landing from '../components/Landing';
 import Login from '../components/Login';
 import Signup from '../components/Signup';
 import Chat from '../components/Chat';
+import CreateRoom from '../components/CreateRoom';
 
 const AppRouter = () => (
   <BrowserRouter>
@@ -14,6 +15,7 @@ const AppRouter = () => (
         <Route exact path="/login" component={Login} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/chat" component={Chat} />
+        <Route exact path="/chat/create" component={CreateRoom} />
         {/* <Route component={NotFound} /> */}
       </Switch>
     </div>

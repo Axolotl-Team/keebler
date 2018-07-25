@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 import axios from 'axios';
 
 import ChatRoomButtons from './ChatRoomButtons';
+import ChatRoomList from './ChatRoomList';
 import Messages from './Messages';
 
 class Chat extends Component {
@@ -13,18 +14,37 @@ class Chat extends Component {
       socket: null,
       input: '',
       messages: [],
+      rooms: [],
+      hasGotMessage: false,
     };
   }
 
   async componentDidMount() {
     this.initConnection();
-    await this.getMessages();
+    this.getRooms();
   }
 
-  async getMessages() {
-    const response = await axios.get('http://localhost:8080/api/rooms/99999/messages');
-    this.setState({ messages: response.data });
-  }
+  getRooms = async () => {
+    const { userId } = this.props;
+
+    try {
+      const response = await axios.get(`http://localhost:8080/api/users/${userId}/rooms`);
+      this.setState({ rooms: response.data });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  getMessages = async () => {
+    const { roomId } = this.props;
+
+    try {
+      const response = await axios.get(`http://localhost:8080/api/rooms/${roomId}/messages`);
+      this.setState({ messages: response.data });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   initConnection = () => {
     const socket = io.connect('http://localhost:8080');
@@ -37,7 +57,6 @@ class Chat extends Component {
           messages: newMessages,
         };
       });
-      console.log(message);
     });
     this.setState({ socket });
   };
@@ -64,16 +83,26 @@ class Chat extends Component {
     });
   };
 
-  // handleCreateRoom = () => {
-  //   axios.post('http://localhost:8080/api/rooms/', { userId, roomname })
-  // };
-
   render() {
-    const { input, messages } = this.state;
+    const {
+      input, messages, rooms, hasGotMessage,
+    } = this.state;
+    const { roomId } = this.props;
+    console.log(rooms);
+
+    if (roomId && !hasGotMessage) {
+      this.setState({ hasGotMessage: true });
+      this.getMessages();
+      // this.getRooms();
+    }
 
     return (
       <div className="chat">
-        {/* <ChatRoomButtons handleCreateRoom={handleCreateRoom} /> */}
+        <ChatRoomButtons
+          handleCreateRoom={this.handleCreateRoom}
+          handleInviteToRoom={this.handleInviteToRoom}
+        />
+        {/* <ChatRoomList /> */}
         <Messages messages={messages} />
         <form onSubmit={this.handleOnSubmit} className="chat-form">
           <input

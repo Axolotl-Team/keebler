@@ -52,7 +52,7 @@ const databaseController = {
     try {
       const { username, password } = req.body;
       const userInstance = await User.create({ username, password });
-      const roomInstance = await Room.findById(1);
+      const roomInstance = await Room.findById(99999);
       await userInstance.addRoom(roomInstance);
       res.json(userInstance);
     } catch (error) {
