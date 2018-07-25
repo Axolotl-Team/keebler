@@ -1,5 +1,5 @@
 body {
-    background-color: rgb(48, 2, 48);
+    background-color: rgb(84, 101, 155);
 }
 
 .landing__title {
@@ -25,7 +25,22 @@ iframe {
 .signup-form__username-label,
     .signup-form__password-label,
         .login-form__username-label,
-            .login-form__password-label {
+            .login-form__password-label,
+                .message {
     color: goldenrod;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
 
+}
+
+.message {
+    overflow: hidden;
+}
+
+.chat-form {
+    position: absolute;
+    bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    margin-left: 200px;
 }
