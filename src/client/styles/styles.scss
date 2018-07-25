@@ -1,0 +1,31 @@
+body {
+    background-color: rgb(48, 2, 48);
+}
+
+.landing__title {
+    color: goldenrod;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    text-align: center;
+}
+
+iframe {
+    margin: 0 auto;
+    display: block;
+}
+
+.wrapper {
+    text-align: center;    
+}
+
+.landing__signup {
+    border-color: goldenrod;
+    border-width: 3px;
+}
+
+.signup-form__username-label,
+    .signup-form__password-label,
+        .login-form__username-label,
+            .login-form__password-label {
+    color: goldenrod;
+
+}
